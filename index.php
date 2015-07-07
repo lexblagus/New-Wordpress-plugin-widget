@@ -1,8 +1,8 @@
 <?php
 /*
-Plugin Name: NewPluginWidget
+Plugin Name: New Plugin Widget
 Plugin URI: https://github.com/lexblagus/New-Wordpress-plugin-widget
-Description: A empty sample widget
+Description: A blank new template with sidebar widget, options page, and rendering. Perfect for beginners create their own Wordpress plugin
 Author: Lex Blagus <new-wordpress-plugin-widget@blag.us>
 Version: 0.01
 Author URI: http://blag.us/
@@ -10,7 +10,6 @@ Author URI: http://blag.us/
 
 //error_reporting(E_ALL);
 add_action("widgets_init", array('newPluginWidget', 'register'));
-
 register_activation_hook( __FILE__, array('newPluginWidget', 'activate'));
 register_deactivation_hook( __FILE__, array('newPluginWidget', 'deactivate'));
 
@@ -19,6 +18,13 @@ register_deactivation_hook( __FILE__, array('newPluginWidget', 'deactivate'));
 Widget class
 ============================================================================= */
 class newPluginWidget {
+	/* -----------------------------------------------------------------------------
+	Registering
+	----------------------------------------------------------------------------- */
+	function register(){
+		register_sidebar_widget('NewPluginWidget', array('newPluginWidget', 'widgetRender'));
+		register_widget_control('NewPluginWidget', array('newPluginWidget', 'wigetOptions'));
+	}
 	/* -----------------------------------------------------------------------------
 	Activation actions
 	----------------------------------------------------------------------------- */
@@ -43,7 +49,7 @@ class newPluginWidget {
 	/* -----------------------------------------------------------------------------
 	Options at widgets admin page
 	----------------------------------------------------------------------------- */
-	function control(){
+	function wigetOptions(){
 		$data = get_option('newPluginWidget');
 	?>
 		<p><b>Options</b></p>
@@ -62,11 +68,11 @@ class newPluginWidget {
 			<input name="newPluginWidget_option3" type="text" value="<?php echo $data['option3']; ?>" /></label><br />
 			<i>help text goes here…</i>
 		</p>
-
+		<input name="newPluginWidget_SAVE" type="hidden" value="SAVE" />
 		<p><b>Usage</b></p>
 		<p>Main help goes here…</p>
 	<?php
-		if (  isset( $_POST['newPluginWidget_option1'] )  ){
+		if (  isset( $_POST['newPluginWidget_SAVE'] )  ){
 			$data['option1'] = attribute_escape($_POST['newPluginWidget_option1']);
 			$data['option2'] = attribute_escape($_POST['newPluginWidget_option2']);
 			$data['option3'] = attribute_escape($_POST['newPluginWidget_option3']);
@@ -74,9 +80,15 @@ class newPluginWidget {
 		}
 	}
 	/* -----------------------------------------------------------------------------
+	Options admin page
+	----------------------------------------------------------------------------- */
+	function pageOptions(){
+		echo('Hello here');
+	}
+	/* -----------------------------------------------------------------------------
 	Widget rendering at site pages
 	----------------------------------------------------------------------------- */
-	function widget($args){
+	function widgetRender($args){
 		echo $args['before_widget'];
 		echo $args['before_title'];
 		echo $args['after_title'];
@@ -90,13 +102,6 @@ class newPluginWidget {
 			</div>
 	<?php
 		echo $args['after_widget'];
-	}
-	/* -----------------------------------------------------------------------------
-	Registering
-	----------------------------------------------------------------------------- */
-	function register(){
-		register_sidebar_widget('NewPluginWidget', array('newPluginWidget', 'widget'));
-		register_widget_control('NewPluginWidget', array('newPluginWidget', 'control'));
 	}
 }
 ?>
